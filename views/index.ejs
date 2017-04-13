@@ -1,0 +1,109 @@
+﻿<%- include extend/header %>
+
+<!--==========================
+  About Section
+============================-->
+  <section id="portfolio">
+    <div class="container wow fadeInUp">
+      <div class="row">
+        <div class="col-md-12">
+          <h3 class="section-title">社區大小事</h3>
+          <div class="section-title-divider"></div>
+        </div>
+      </div>
+
+      <div class="row">
+		<div class="col-md-2">
+
+        </div>
+        <div class="col-md-4">
+          <a class="portfolio-item" style="background-image: url(img/L001.gif);" href="">
+            <div class="details">
+              <h4>Portfolio 1</h4>
+              <span>Alored dono par</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-md-4">
+          <a class="portfolio-item" style="background-image: url(img/L002.gif);" href="">
+            <div class="details">
+              <h4>Portfolio 2</h4>
+              <span>Alored dono par</span>
+            </div>
+          </a>
+        </div>
+		<div class="col-md-2">
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+<!--==========================
+  Contact Section
+============================-->
+  <section id="contact">
+    <div class="container wow fadeInUp">
+      <div class="row">
+        <div class="col-md-12">
+          <h3 class="section-title">聯絡我們</h3>
+          <div class="section-title-divider"></div>
+          <p class="section-description">「若您有任何電子布告欄相關之問題，歡迎您填寫以下表單與我們聯絡，如有立即回覆之需求，<br>請來電：(02)89932557(服務時間：09:00~17:00)，我們將有專人為您說明，謝謝!」</p>
+       </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 col-md-push-2">
+          <div class="info">
+            <div>
+              <i class="fa fa-map-marker"></i>
+              <p>新北市新莊區中華路二段5號8樓</p>
+            </div>
+
+            <div>
+              <i class="fa fa-envelope"></i>
+              <p>hermes@blazing.com.tw</p>
+            </div>
+
+            <div>
+              <i class="fa fa-phone"></i>
+              <p>(02)89932557</p>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-md-5 col-md-push-2">
+          <div class="form">
+            <div id="sendmessage">Your message has been sent. Thank you!</div>
+            <div id="errormessage"></div>
+            <form action="" method="post" role="form" class="contactForm">
+                <div class="form-group">
+                  <input type="text" name="name" class="form-control" id="name" placeholder="姓名" data-rule="minlen:2" data-msg="最少輸入兩個字" />
+                  <div class="validation"></div>
+                </div>
+                <div class="form-group">
+                  <input type="email" class="form-control" name="email" id="email" placeholder="電子信箱" data-rule="email" data-msg="請輸入有效的電子信箱" />
+                  <div class="validation"></div>
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control" name="subject" id="subject" placeholder="主旨" data-rule="minlen:4" data-msg="最少輸入四個字" />
+                  <div class="validation"></div>
+                </div>
+                <div class="form-group">
+                  <textarea class="form-control" name="message" rows="5" data-rule="required" data-msg="你的意見" placeholder="意見"></textarea>
+                  <div class="validation"></div>
+                </div>
+                <div class="text-center"><button type="submit">傳送意見</button></div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+<%- include extend/footer %>

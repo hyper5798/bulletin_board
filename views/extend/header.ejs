@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title><%= title%></title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+
+  <!-- Place your favicon.ico and apple-touch-icon.png in the template root directory -->
+  <link href="favicon.ico" rel="shortcut icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Raleway:300,400,500,700,800" rel="stylesheet">
+
+  <!-- Bootstrap CSS File -->
+  <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Libraries CSS Files -->
+  <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <link href="lib/animate-css/animate.min.css" rel="stylesheet">
+
+  <!-- Main Stylesheet File -->
+  <link href="css/style.css" rel="stylesheet">
+
+<!-- =======================================================
+  Theme Name: Imperial
+  Theme URL: https://bootstrapmade.com/imperial-free-onepage-bootstrap-theme/
+  Author: BootstrapMade.com
+  Author URL: https://bootstrapmade.com
+======================================================= -->
+</head>
+
+<body>
+  <!--<div id="preloader"></div>-->
+
+<!--==========================
+  Hero Section
+============================-->
+<% if(user===undefined || user ===null){ %>
+  <section id="hero">
+    <div class="hero-container">
+      <div class="wow fadeIn">
+        <!--<div class="hero-logo">
+          <img class="" src="img/logo.png" alt="Imperial">
+        </div>-->
+
+        <h1>電子布告欄</h1>
+        <h2><!--We create <span class="rotating">beautiful graphics, functional websites</span>--></h2>
+        <div class="actions">
+          <a href="#portfolio" class="btn-get-started">開始</a>
+          <!--<a href="#services" class="btn-services">服務</a>-->
+		</div>
+      </div>
+    </div>
+  </section>
+ <% } %>
+<!--==========================
+  Header Section
+============================-->
+  <header id="header">
+    <div class="container">
+
+      <div id="logo" class="pull-left">
+        <a href="#hero"><img src="img/Logo1n.png" alt="" title="" /></img></a>
+        <!-- Uncomment below if you prefer to use a text image -->
+        <!--<h1><a href="#hero">Blazing</a></h1>-->
+      </div>
+
+      <nav id="nav-menu-container">
+        <ul class="nav-menu">
+          <% if(user===undefined || user ===null){ %>
+          <li class="menu-active"><a href="#hero">首頁</a></li>
+          <% } %>
+          <li><a href="#portfolio">電子布告欄</a></li>
+          
+          <% if(user){ %>
+              <li><a href="/logout">登出</a></li>
+          <% }else{ %>
+              <li><a href="/register">註冊</a></li>
+              <li><a href="/login">登入</a></li>
+          <% } %>
+          <% if(user){ %>
+            <% if(user.level !==undefined || user.level <2){ %>
+              <li class="menu-has-children"><a href="">管理</a>
+                <ul>
+                  <li><a href="#">里長資訊</a></li>
+                  <li><a href="#">布告</a></li>
+                  <% if( user.level === 0){ %>
+                    <li><a href="/account">帳戶</a></li>
+                  <% } %>
+                </ul>
+              </li>
+            <% } %>
+          <% } %>
+          <li><a href="#contact">聯絡我們</a></li>
+        </ul>
+      </nav><!-- #nav-menu-container -->
+    </div>
+  </header><!-- #header -->

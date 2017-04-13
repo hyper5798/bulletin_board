@@ -1,0 +1,49 @@
+<%- include ../extend/header1 %>
+        <div class="container">
+			<div class="row main">
+
+				<div class="main-login main-center">
+					<form class="form-horizontal" method="post" action="#">
+
+						<div class="form-group">
+							<label for="name" class="cols-sm-2 control-label">帳號</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+									<input type="text" class="form-control" name="account" id="account"  placeholder="輸入帳號"/>
+								</div>
+							</div>
+						</div>
+
+
+
+						<div class="form-group">
+							<label for="password" class="cols-sm-2 control-label">密碼</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+									<input type="password" class="form-control" name="password" id="password"  placeholder="輸入密碼"/>
+								</div>
+							</div>
+						</div>
+
+
+
+						<div class="form-group ">
+							<!--<button type="button" class="btn btn-primary btn-lg btn-block login-button" value="Login">登入</button>-->
+							<input class="btn btn-primary" type="submit" value="Login">
+						</div>
+
+					</form>
+				</div>
+			</div>
+		</div>
+
+<script class="code" type="text/javascript">
+    function myFunction(btn) {
+        //btn.style.background = "#EEFFBD";
+        document.getElementById('error_message').innerText = '';
+    }
+
+</script>
+<%- include ../extend/footer1 %>
