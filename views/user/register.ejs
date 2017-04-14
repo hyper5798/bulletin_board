@@ -1,16 +1,29 @@
 <%- include ../extend/header1 %>
         <div class="container">
+
+			<% if (error) { %>
+				<div id="showBlock" class="row main">
+					<div class="error-center">
+
+							<label id="error_message">
+								<%= error %>
+							</label>
+
+					</div>
+				</div>
+			<% } %>
+
 			<div class="row main">
-				
+
 				<div class="main-login main-center">
-					<form class="form-horizontal" method="post" action="#">
-						
+					<form id='form1' class="form-horizontal" method="post" action="#">
+
 						<div class="form-group">
 							<label for="name" class="cols-sm-2 control-label">帳號</label>
 							<div class="cols-sm-10">
 								<div class="input-group">
 									<span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-									<input type="text" class="form-control" name="name" id="name"  placeholder="輸入帳號"/>
+									<input type="text" class="form-control" name="account" id="account"  placeholder="輸入帳號" value="<%= account%>" onfocus="myFunction(this)" required/>
 								</div>
 							</div>
 						</div>
@@ -20,7 +33,7 @@
 							<div class="cols-sm-10">
 								<div class="input-group">
 									<span class="input-group-addon"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
-									<input type="text" class="form-control" name="email" id="email"  placeholder="輸入Email"/>
+									<input type="text" class="form-control" name="email" id="email"  placeholder="輸入Email" onblur="validateEmail(this.value);" value="<%= email%>" onfocus="myFunction(this)" required/>
 								</div>
 							</div>
 						</div>
@@ -30,7 +43,7 @@
 							<div class="cols-sm-10">
 								<div class="input-group">
 									<span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
-									<input type="text" class="form-control" name="username" id="username"  placeholder="輸入名字"/>
+									<input type="text" class="form-control" name="username" id="username"  placeholder="輸入名字" value="<%= username%>" onfocus="myFunction(this)" required/>
 								</div>
 							</div>
 						</div>
@@ -40,7 +53,7 @@
 							<div class="cols-sm-10">
 								<div class="input-group">
 									<span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
-									<input type="password" class="form-control" name="password" id="password"  placeholder="輸入密碼"/>
+									<input type="password" class="form-control" name="password" id="password"  placeholder="輸入密碼" value="<%= password%>" onfocus="myFunction(this)" required/>
 								</div>
 							</div>
 						</div>
@@ -50,17 +63,19 @@
 							<div class="cols-sm-10">
 								<div class="input-group">
 									<span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
-									<input type="password" class="form-control" name="confirm" id="confirm"  placeholder="輸入確認密碼"/>
+									<input type="password" class="form-control" name="confirm" id="confirm"  placeholder="輸入確認密碼" value="<%= confirm%>" onfocus="myFunction(this)" required/>
 								</div>
 							</div>
 						</div>
 
 						<div class="form-group ">
-							<button type="button" class="btn btn-primary btn-lg btn-block login-button">註冊</button>
+							<button type="button" class="btn btn-primary btn-lg btn-block login-button" onClick="check()">註冊</button>
+							<!--<input class="btn btn-primary" type="submit" value="註冊"> <!--onclick="check()">-->
 						</div>
-						
+
 					</form>
 				</div>
 			</div>
 		</div>
 <%- include ../extend/footer1 %>
+

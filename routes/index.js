@@ -1,7 +1,7 @@
 ﻿var express = require('express');
 var router = express.Router();
 var ListDbTools = require('../models/listDbTools.js');
-var UserDbTools =  require('../models/userDbTools.js');
+var User =  require('../models/user.js');
 var settings = require('../settings');
 var JsonFileTools =  require('../models/jsonFileTools.js');
 var path = './public/data/finalList.json';
@@ -24,30 +24,36 @@ module.exports = function(app) {
   
   app.get('/login', function (req, res) {
 	req.session.user = null;
-  	var name = req.flash('post_name').toString();
+  	var account = req.flash('post_account').toString();
 	var successMessae,errorMessae;
-	console.log('Debug register get -> name:'+ name);
+	console.log('Debug register get -> account:'+ account);
 
-	if(name ==''){
+	if(account ==''){
 		errorMessae = '';
 		res.render('user/login', { title: 'Login',
+			account:account,
+			password:password,
 			error: errorMessae
 		});
 	}else{
 		var password = req.flash('post_password').toString();
 
 		console.log('Debug register get -> password:'+ password);
-		UserDbTools.findUserByName(name,function(err,user){
+		User.findUserByAccount(account,function(err,user){
 			if(err){
 				errorMessae = err;
 				res.render('user/login', { title: 'Login',
+					account:account,
+					password:password,
 					error: errorMessae
 				});
 			}
 			if(user == null ){
 				//login fail
-				errorMessae = 'The account is invalid';
+				errorMessae = '帳號未註冊!';
 				res.render('user/login', { title: 'Login',
+					account:null,
+					password:password,
 					error: errorMessae
 				});
 			}else{
@@ -57,8 +63,10 @@ module.exports = function(app) {
 					return res.redirect('/');
 				}else{
 					//login fail
-					errorMessae = 'The password is invalid';
+					errorMessae = '密碼不正確!';
 					res.render('user/login', { title: 'Login',
+						account:account,
+						password:null,
 						error: errorMessae
 					});
 				}
@@ -68,35 +76,48 @@ module.exports = function(app) {
   });
 
   app.post('/login', function (req, res) {
-  	var post_name = req.body.account;
+  	var post_account = req.body.account;
   	var	post_password = req.body.password;
-  	console.log('Debug login post -> name:'+post_name);
+  	console.log('Debug login post -> account:'+post_account);
 	console.log('Debug login post -> password:'+post_password);
-	req.flash('post_name', post_name);
+	req.flash('post_account', post_account);
 	req.flash('post_password', post_password);
 	return res.redirect('/login');
   });
 
   app.get('/register', function (req, res) {
-  	var name = req.flash('post_name').toString();
-	var password = req.flash('post_password').toString();
-	var email = req.flash('post_email').toString();
+	var account = req.flash('post_account').toString();
 	var successMessae,errorMessae;
-	var count = 0;
-	var level = 1;
-	console.log('Debug register get -> name:'+ name);
-	console.log('Debug register get -> password:'+ password);
-	console.log('Debug register get -> email:'+ email);
-	if(name==''){
+  	
+	if(account==''){
 		//Redirect from login
 		res.render('user/register', { title: 'Register',
+			account:null,
+			email:null,
+			username:null,
+			password:null,
+			confirm:null,
 			error: errorMessae
 		});
 	}else{
 		//Register submit with post method
+		var name = req.flash('post_name').toString();
+		var password = req.flash('post_password').toString();
+		var email = req.flash('post_email').toString();
+		var confirm = req.flash('post_confirm').toString();
+		
+		
+		var count = 0;
+		var level = 1;
+		console.log('Debug register get -> account:'+ account);
+		console.log('Debug register get -> name:'+ name);
+		console.log('Debug register get -> password:'+ password);
+		console.log('Debug register get -> email:'+ email);
+		console.log('Debug register get -> confirm:'+ confirm);
+		
 		var test = false;
 		if(test == true){ //for debug to remove all users
-			UserDbTools.removeAllUsers(function(err,result){
+			User.removeAllUsers(function(err,result){
 				if(err){
 					console.log('removeAllUsers :'+err);
 				}
@@ -104,55 +125,92 @@ module.exports = function(app) {
 			});
 		}
 
-		UserDbTools.findUserByName(name,function(err,user){
+		User.findUserByAccount(account,function(err,user){
 			if(err){
 				errorMessae = err;
 				res.render('user/register', { title: 'Register',
+					account:account,
+					email:email,
+					username:name,
+					password:password,
+					confirm:confirm,
 					error: errorMessae
 				});
 			}
 			console.log('Debug register user -> name: '+user);
 			if(user != null ){
-				errorMessae = 'This account already exists!';
+				errorMessae = '帳號已註冊,請更換帳號再註冊!';
 				res.render('user/register', { title: 'Register',
+					account:account,
+					email:email,
+					username:name,
+					password:password,
+					confirm:confirm,
 					error: errorMessae
 				});
 			}else{
-				//save database
-				if(name == 'admin'){
-					level = 0;
-				}
-				UserDbTools.saveUser(name,password,email,level,function(err,result){
+				
+				User.saveUser(account,email,name,password,function(err,result){
 					if(err){
-						errorMessae = 'Registration is failed!';
+						errorMessae = '註冊失敗,請重新註冊!';
 						res.render('user/register', { title: 'Register',
+							account:account,
+							email:email,
+							username:name,
+							password:password,
+							confirm:confirm,
 							error: errorMessae
 						});
 					}
-					UserDbTools.findUserByName(name,function(err,user){
-						if(user){
-							req.session.user = user;
-						}
-						return res.redirect('/');
-					});
+					//跳到註冊成功頁面
 				});
 			}
 		});
 	}
   });
 
-  app.post('/register', function (req, res) {
-		var post_name = req.body.register_account;
+  
 
+  app.post('/register', function (req, res) {
+		var account = req.body.account;
+		var	email = req.body.email;
+		var	username = req.body.username;
+		var	password = req.body.password;
+		var	confirm = req.body.confirm;
 		var successMessae,errorMessae;
-		var	post_password = req.body.register_password;
-		var	post_email = req.body.register_email;
-		console.log('Debug register post -> post_name:'+post_name);
-		console.log('Debug register post -> post_password:'+post_password);
-		console.log('Debug register post -> post_emai:'+post_email);
-		req.flash('post_name', post_name);
-		req.flash('post_password', post_password);
-		req.flash('post_email', post_email);
+		if(!validateEmail(email)){
+			errorMessae = '電子信箱格式不正確!';
+			res.render('user/register', { title: 'Register',
+			    account:account,
+				email:email,
+				username:username,
+				password:password,
+				confirm:confirm,
+				error: errorMessae
+			});
+		}
+		if(password !== confirm){
+			errorMessae = '確認密碼不正確!';
+			res.render('user/register', { title: 'Register',
+			    account:account,
+				email:email,
+				username:username,
+				password:password,
+				confirm:confirm,
+				error: errorMessae
+			});
+		}
+		
+		console.log('account:'+account);
+		console.log('email:'+email);
+		console.log('username:'+username);
+		console.log('password:'+password);
+		console.log('confirm:'+confirm);
+		req.flash('post_account', account);
+		req.flash('post_name', username);
+		req.flash('post_password', password);
+		req.flash('post_email', email);
+		req.flash('post_confirm', confirm);
 		return res.redirect('/register');
   });
 
@@ -172,7 +230,7 @@ module.exports = function(app) {
 		var post_name = req.flash('name').toString();
 
 		console.log('Debug account get -> refresh :'+refresh);
-		UserDbTools.findAllUsers(function (err,users){
+		User.findAllUsers(function (err,users){
 			if(err){
 				errorMessae = err;
 			}
@@ -195,83 +253,6 @@ module.exports = function(app) {
 			});
 		});
     });
-
-  	app.post('/account', function (req, res) {
-  		var	post_name = req.body.postName;
-		var postSelect = req.body.postSelect;
-		console.log('post_name:'+post_name);
-		console.log('postSelect:'+postSelect);
-		var successMessae,errorMessae;
-		req.flash('name',post_name);//For refresh users data
-
-		if(postSelect == ""){//Delete mode
-			UserDbTools.removeUserByName(post_name,function(err,result){
-				if(err){
-					console.log('removeUserByName :'+post_name+ " fail! \n" + err);
-					errorMessae = err;
-				}else{
-					console.log('removeUserByName :'+post_name + 'success');
-					successMessae = successMessae;
-				}
-				UserDbTools.findAllUsers(function (err,users){
-					console.log('Find the account :'+users.length);
-				});
-				req.flash('refresh','delete');//For refresh users data
-				return res.redirect('/account');
-			});
-
-		}else{//Edit modej
-			console.log('postSelect[0] :'+typeof(postSelect) );
-			var arr = postSelect.split(",");
-			var authz = {a01:arr[1],a02:arr[2],a03:arr[3],a04:arr[4],a05:arr[5],a06:arr[6]};
-			if(arr[1]=='true'){
-				authz.a01 = true;
-			}else{
-				authz.a01 = false;
-			}
-			if(arr[2]=='true'){
-				authz.a02 = true;
-			}else{
-				authz.a02 = false;
-			}
-			if(arr[3]=='true'){
-				authz.a03 = true;
-			}else{
-				authz.a03 = false;
-			}
-			if(arr[4]=='true'){
-				authz.a04 = true;
-			}else{
-				authz.a04 = false;
-			}
-			if(arr[5]=='true'){
-				authz.a05 = true;
-			}else{
-				authz.a05 = false;
-			}
-			if(arr[6]=='true'){
-				authz.a06 = true;
-			}else{
-				authz.a06 = false;
-			}
-			var json = {enable:arr[0],authz:authz};
-
-			console.log('updateUser json:'+json );
-
-			UserDbTools.updateUser(post_name,json,function(err,result){
-				if(err){
-					console.log('updateUser :'+post_name + err);
-					errorMessae = err;
-				}else{
-					console.log('updateUser :'+post_name + 'success');
-					successMessae = successMessae;
-				}
-				req.flash('refresh','edit');//For refresh users data
-				return res.redirect('/account');
-			});
-		}
-  	});
-
 };
 
 function checkLogin(req, res, next) {
@@ -294,4 +275,13 @@ function checkNotLogin(req, res, next) {
 	  next();
   }
   
+}
+
+function validateEmail(sEmail) {
+	var reEmail = /^(?:[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+\.)*[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+@(?:(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!\.)){0,61}[a-zA-Z0-9]?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!$)){0,61}[a-zA-Z0-9]?)|(?:\[(?:(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\]))$/;
+
+	if(!sEmail.match(reEmail)) {
+		return false;
+	}
+	return true;
 }

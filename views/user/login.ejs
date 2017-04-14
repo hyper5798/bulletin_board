@@ -1,6 +1,18 @@
 <%- include ../extend/header1 %>
         <div class="container">
+			<% if (error) { %>		
+				<div id="showBlock" class="row main">
+					<div class="error-center">			
+						
+							<label id="error_message">
+								<%= error %>
+							</label>
+						
+					</div>
+				</div>
+			<% } %>
 			<div class="row main">
+				
 
 				<div class="main-login main-center">
 					<form class="form-horizontal" method="post" action="#">
@@ -10,7 +22,7 @@
 							<div class="cols-sm-10">
 								<div class="input-group">
 									<span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-									<input type="text" class="form-control" name="account" id="account"  placeholder="輸入帳號"/>
+									<input type="text" class="form-control" name="account" id="account"  placeholder="輸入帳號"  value="<%= account%>" onfocus="myFunction(this)" required/>
 								</div>
 							</div>
 						</div>
@@ -22,7 +34,7 @@
 							<div class="cols-sm-10">
 								<div class="input-group">
 									<span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
-									<input type="password" class="form-control" name="password" id="password"  placeholder="輸入密碼"/>
+									<input type="password" class="form-control" name="password" id="password"  placeholder="輸入密碼" value="<%= password%>" onfocus="myFunction(this)" required/>
 								</div>
 							</div>
 						</div>
@@ -34,6 +46,8 @@
 							<input class="btn btn-primary" type="submit" value="Login">
 						</div>
 
+						
+
 					</form>
 				</div>
 			</div>
@@ -41,9 +55,12 @@
 
 <script class="code" type="text/javascript">
     function myFunction(btn) {
-        //btn.style.background = "#EEFFBD";
-        document.getElementById('error_message').innerText = '';
+		//hide
+		document.getElementById('showBlock').style.display = "none";
+		//show
+		//document.getElementById('showBlock').style.display = "block";
     }
+	
 
 </script>
 <%- include ../extend/footer1 %>
