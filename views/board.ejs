@@ -1,0 +1,157 @@
+﻿<%- include extend/header2 %>
+
+<!--==========================
+  About Section
+============================-->
+<!--==========================
+  Contact Section
+============================-->
+<section id="contact">
+    <div class="container wow fadeInUp">
+      <div class="row">
+        <div class="col-md-12">
+          <% if(error){ %>
+            <h3 class="section-title">里長專區</h3>
+          <% } else { %>
+            <h3 class="section-title">里長請留言</h3>
+          <% } %>
+          <div class="section-title-divider"></div>
+          <% if(error){ %>
+            <div id="alert-block" class="fa fa-2x">
+              <p class="section-description">「此內容僅供特定身分之會員觀看,請先註冊,並經管理員確認身分後,<br>自行登入您的帳號及密碼方可觀看，<br>若您已註冊過,請直接點選"登入"輸入您的帳號及密碼,<br>再點選頁面的"里長留言專區"前去留言」</p>
+            </div>
+          <% } else { %>
+            <p class="section-description">「若您有任何訊息要發佈到電子布告欄，歡迎您填寫以下表單」</p>
+          <% } %>
+
+       </div>
+    </div>
+    <% if(error === false){ %>
+    <div id="page-wrapper" >
+      <form id="editBoard" class="form-horizontal" action="" method="post">
+        <div id="form1-inner">
+            <div class="row">
+                <div class="col-md-12">
+                  <table border="1" class="table table-striped table-hover">
+                    <thead>
+                      <tr bgcolor="#428bca">
+                        <th width="25%">
+                          <div class="fa fa-2x" style="color:white;" >縣市</div>
+                        </th>
+                        <th width="25%">
+                          <div class="fa fa-2x" style="color:white;" >區</div>
+                        </th>
+                        <th width="50%">
+                          <div class="fa fa-2x" style="color:white;" >單位</div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="rows">
+                        <td>
+                          <select id="mCity" name="mCity" class="selectpicker">
+                            <% if(citys) { %>
+                              <% for(var i=0;i<citys.length;i++){ %>
+                                  <% if(i!==0){ %>
+                                    <% if(citys[i] === city){ %>
+                                      <option value = "<%= citys[i] %>" selected>
+                                    <% }else{ %>
+                                      <option value = "<%= citys[i] %>" >
+                                    <% } %>
+
+
+                                    <%= citys[i] %>
+                                    </option>
+                                  <% } %>
+                              <% } %>
+                            <% } %>
+                          </select>
+                        </td>
+                        <td>
+                           <select id="mTownship" name="mTownship" class="selectpicker">
+                            <% if(township) { %>
+                              <% for(var i=0;i<township.length;i++){ %>
+                                  <% if(i === 0){ %>
+                                    <option value = "<%= township[i] %>" selected>
+                                  <% }else{ %>
+                                    <option value = "<%= township[i] %>" >
+                                  <% } %>
+
+                                  <%= township[i] %>
+                                  </option>
+                              <% } %>
+                            <% } %>
+                          </select>
+                        </td>
+                        <td>
+                           <select id="mDistrict" name="mDistrict" class="selectpicker">
+                            <% if(district) { %>
+                              <% for(var i=0;i<district.length;i++){ %>
+                                  <% if(i === 0){ %>
+                                    <option value = "<%= district[i] %>" selected>
+                                  <% }else{ %>
+                                    <option value = "<%= district[i] %>" >
+                                  <% } %>
+
+                                  <%= district[i] %>
+                                  </option>
+                              <% } %>
+                            <% } %>
+                          </select>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+            </div>
+             <!-- /. ROW  -->
+             <hr />
+
+        </div>
+        <!-- /. PAGE INNER  -->
+        <div id="form2-inner">
+            <div class="row">
+                <div class="col-md-12">
+                 <table border="1" class="table table-striped table-hover">
+                    <tr >
+                      <th width="25%" bgcolor="#428bca">
+                        <div class="fa fa-2x" style="color:white;" >主旨</div>
+                      </th>
+                      <th width="75%">
+                        <div>
+                          <input class="fa fa-2x" id="mSubject" name="mSubject" type="text" maxlength="20" size="70"/>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr >
+                      <th width="25%" bgcolor="#428bca">
+                        <div class="fa fa-2x" style="color:white;" >內容</div>
+                      </th>
+                      <th width="75%">
+                        <div>
+                          <textarea class="fa fa-2x" id="mContent" name="mContent" placeholder="請輸入內容" rows="8" cols="70" maxlength="300">
+                          </textarea>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr >
+                      <th width="25%" >
+
+                      </th>
+                      <th width="75%">
+                        <div >
+                          <input class="btn btn-primary btn-lg btn-block login-button fa fa-2x" type="submit" value="提交">
+                        </div>
+                      </th>
+                    </tr>
+                  </table>
+            </div>
+             <!-- /. ROW  -->
+        </div>
+        <!-- /. PAGE INNER  -->
+      </form>
+    </div>
+    <!-- /. PAGE WRAPPER  -->
+    <% } %>
+</section>
+<%- include extend/footer %>

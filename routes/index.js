@@ -2,11 +2,12 @@
 var router = express.Router();
 var ListDbTools = require('../models/listDbTools.js');
 var User =  require('../models/user.js');
+var Review =  require('../models/review.js');
 var settings = require('../settings');
 var JsonFileTools =  require('../models/jsonFileTools.js');
 var path = './public/data/finalList.json';
 var path2 = './public/data/test.json';
-var path3 = './public/data/gwMap.json';
+var path3 = './public/data/areaList.json';
 var hour = 60*60*1000;
 var type = 'gps';
 
@@ -21,7 +22,66 @@ module.exports = function(app) {
 		});
   });
 
-  
+  app.get('/board', function (req, res) {
+      
+	  var error = true;
+	  var user = req.session.user;
+	  var citys = settings.citys;
+	  var city = '新竹市';
+	  var list=null;township = [],district=[];
+	  var areaList = JsonFileTools.getJsonFromFile(path3);
+
+	  if(user && user.level === 2){
+		    error = false;
+			city = citys[user.area];
+			list = areaList[city];
+			if(list){
+				for(var i=0;i<list.length;i++){
+					//console.log('town:'+Object.keys(list[i])[0]);
+					township.push(Object.keys(list[i])[0]);
+					//
+					if(i===0){
+						//district list of first town
+						district = list[i][Object.keys(list[i])[0]];
+					}
+				}
+				console.log('township:'+JSON.stringify(township));
+				console.log('district:'+JSON.stringify(district));
+			}
+	  }
+	  
+	  res.render('board', { title: 'Board',
+			user:req.session.user,
+			citys : citys,
+			city : city,
+			township:township,
+			district: district,
+			list: list,
+			error
+	  });
+  });
+
+  app.post('/board', function (req, res) {
+  	var city = req.body.mCity;
+  	var	township = req.body.mTownship;
+	var	district = req.body.mDistrict;
+	var	subject = req.body.mSubject;
+	var	content = req.body.mContent;
+  	console.log('Debug board post -> city:'+city);
+	console.log('Debug login post -> township:'+township);
+	console.log('Debug board post -> district:'+district);
+	console.log('Debug login post -> subject:'+subject);
+	console.log('Debug login post -> content:'+content);
+
+	Review.saveData(city,township,district,subject,content,function(err,result){
+		if(err){
+			console.log('Debug board Review.saveData -> err:'+err);
+		}
+		return res.redirect('/board');
+	});
+	
+  });
+
   app.get('/login', function (req, res) {
 	req.session.user = null;
   	var account = req.flash('post_account').toString();

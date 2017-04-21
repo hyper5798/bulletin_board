@@ -99,7 +99,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #hero .hero-container {
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.6);
   display: table-cell;
   margin: 0;
   padding: 0;
@@ -861,4 +861,32 @@ body.mobile-nav-active #mobile-nav-toggle {
   text-align: center;
   font-size: 13px;
   color: #ccc;
+}
+
+#page-wrapper {
+    padding: 15px 15px;
+    min-height: 600px;
+    background: #F3F3F3;
+}
+#form1-inner {
+    width: 100%;
+    margin: 10px 20px 10px 0px;
+    background-color: #fff!important;
+    padding: 10px;
+    max-height: 120px;
+}
+
+#form2-inner {
+    width: 100%;
+    margin: 20px 20px 10px 0px;
+    background-color: #fff!important;
+    padding: 10px;
+    min-height: 300px;
+}
+#alert-block {
+    width: 100%;
+    margin: 20px 20px 10px 0px;
+    background-color: #fff!important;
+    padding: 10px;
+    min-height: 200px;
 }
