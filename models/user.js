@@ -10,16 +10,16 @@ var userSchema = new Schema({
   password: { type: String},
   enable: { type: Boolean},
   level:{type: Number},//0:Hightest 1:normal
-  area:{type: Number},
-  update_at: { type: Schema.Types.Mixed},
-  created_at: { type: Date}
+  city:{type: String},
+  update_at: { type: String},
+  created_at: { type: String}
 });
 
 // the schema is useless so far
 // we need to create a model using it
 var UserModel = mongoose.model('User', userSchema);
 
-exports.saveUser = function (account,email,name,password,callback) {
+function saveUser(account,email,name,password,city,callback) {
   console.log(moment().format('YYYY-MM-DD HH:mm:ss')+' Debug : saveUser()');
   var isEnable = false;
   var level = 3;
@@ -38,7 +38,7 @@ exports.saveUser = function (account,email,name,password,callback) {
     email: email,
     enable: isEnable,
     level:level,//0:Hightest,1:area manager,2:announcer,3:normal
-    area: area,
+    city: city,
     update_at  : time,
     created_at: time
   });
@@ -53,33 +53,27 @@ exports.saveUser = function (account,email,name,password,callback) {
 
 };
 
+exports.saveUser = saveUser;
+
 /*
 *Update name,password,authz
 *json:{password : password, level : level ,autthz:authz }
 */
-exports.updateUser = function (name,json,calllback) {
+function updateUser(account,json,calllback) {
   console.log(moment().format('YYYY-MM-DD HH:mm:ss')+' Debug : updateUser()');
-  console.log('Debug : updateUser name='+name);
-  var time = {
-    date   : moment().format("YYYY-MM-DD HH:mm:ss"),
-    year   : moment().format("YYYY"),
-    month  : moment().format("YYYY-MM"),
-    day    : moment().format("YYYY-MM-DD"),
-    hour   : moment().format("YYYY-MM-DD HH"),
-    minute : moment().format("YYYY-MM HH:mm"),
-    cdate   : moment().format("YYYY-MM HH:mm")
-  };
+  console.log('Debug : updateUser account='+account);
+  var time =  moment().format("YYYY-MM-DD HH:mm:ss");
   json.update_at=time;
 
-  if(name){
-    UserModel.find({ name: name },function(err,users){
+  if(account){
+    UserModel.find({ account: account },function(err,users){
       if(err){
-        console.log('Debug : updateUser find user by name =>'+err);
+        console.log('Debug : updateUser find user by account =>'+err);
         return calllback(err);
       }
       if(users.length>0){
         var userId = users[0]._id;
-        console.log('Debug : getUserId device ' + users);
+        console.log('Debug : getUser  :' + JSON.stringify(users[0]));
         console.log('Debug : getUserId : ' +userId);
         UserModel.update({_id : userId},
           json,
@@ -105,6 +99,8 @@ exports.updateUser = function (name,json,calllback) {
   }
 };
 
+exports.updateUser = updateUser;
+
 /*
 *Remove all of users
 *Return -1:資料存取錯誤 0:刪除完成 1:刪除失敗
@@ -122,18 +118,20 @@ exports.removeAllUsers = function (calllback) {
     });
 };
 
-exports.removeUserByName = function (name,calllback) {
-    UserModel.remove({name:name}, (err)=>{
-      console.log(moment().format('YYYY-MM-DD HH:mm:ss')+' Debug : removeUserByName()');
+function removeUserByAccount(account,calllback) {
+    UserModel.remove({account:account}, (err)=>{
+      console.log(moment().format('YYYY-MM-DD HH:mm:ss')+' Debug : removeUserByAccount()');
       if (err) {
-        console.log('Debug : User remove name :'+name+' occur a error:', err);
+        console.log('Debug : User remove account :'+account+' occur a error:', err);
             return calllback(err);
       } else {
-        console.log('Debug : User remove name :'+name+' success.');
+        console.log('Debug : User remove account :'+account+' success.');
             return calllback(err,'success');
       }
     });
 };
+
+exports.removeUserByAccount = removeUserByAccount;
 
 /*Find all of users
 */

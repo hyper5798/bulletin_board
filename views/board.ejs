@@ -49,7 +49,7 @@
                     <tbody>
                       <tr class="rows">
                         <td>
-                          <select id="mCity" name="mCity" class="selectpicker">
+                          <select id="mCity" name="mCity" onchange="cityChange()" class="selectpicker">
                             <% if(citys) { %>
                               <% for(var i=0;i<citys.length;i++){ %>
                                   <% if(i!==0){ %>
@@ -68,7 +68,7 @@
                           </select>
                         </td>
                         <td>
-                           <select id="mTownship" name="mTownship" class="selectpicker">
+                           <select id="mTownship" name="mTownship" onchange="townChange()" class="selectpicker">
                             <% if(township) { %>
                               <% for(var i=0;i<township.length;i++){ %>
                                   <% if(i === 0){ %>
@@ -119,7 +119,7 @@
                       </th>
                       <th width="75%">
                         <div>
-                          <input class="fa fa-2x" id="mSubject" name="mSubject" type="text" maxlength="20" size="70"/>
+                          <input class="fa fa-2x" id="mSubject" name="mSubject" type="text" maxlength="20" size="50"/>
                         </div>
                       </th>
                     </tr>
@@ -129,7 +129,7 @@
                       </th>
                       <th width="75%">
                         <div>
-                          <textarea class="fa fa-2x" id="mContent" name="mContent" placeholder="請輸入內容" rows="8" cols="70" maxlength="300">
+                          <textarea class="fa fa-2x" id="mContent" name="mContent" placeholder="請輸入內容" rows="8" cols="50" maxlength="300">
                           </textarea>
                         </div>
                       </th>
@@ -149,6 +149,10 @@
              <!-- /. ROW  -->
         </div>
         <!-- /. PAGE INNER  -->
+        <input id="city" name="city" value ="<%= city%>" type="hidden"">
+        <input id="township" name="township" value ="<%= township%>" type="hidden"">
+        <input id="district" name="district" value ="<%= district%>" type="hidden"">
+        <input id="areaList" name="areaList" value ="<%= JSON.stringify(areaList)%>" type="hidden"">
       </form>
     </div>
     <!-- /. PAGE WRAPPER  -->

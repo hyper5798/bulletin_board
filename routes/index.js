@@ -5,11 +5,10 @@ var User =  require('../models/user.js');
 var Review =  require('../models/review.js');
 var settings = require('../settings');
 var JsonFileTools =  require('../models/jsonFileTools.js');
-var path = './public/data/finalList.json';
-var path2 = './public/data/test.json';
-var path3 = './public/data/areaList.json';
+var path = './public/data/areaList.json';
 var hour = 60*60*1000;
 var type = 'gps';
+var citys = settings.citys;//All of citys
 
 module.exports = function(app) {
   
@@ -17,8 +16,9 @@ module.exports = function(app) {
 	  if(req.session.user){
 		  console.log('$$$$ user is login')
 	  }
+	  var user = req.session.user;
 	  res.render('index', { title: 'Index',
-			user:req.session.user
+			user:user
 		});
   });
 
@@ -26,28 +26,32 @@ module.exports = function(app) {
       
 	  var error = true;
 	  var user = req.session.user;
-	  var citys = settings.citys;
 	  var city = '新竹市';
 	  var list=null;township = [],district=[];
-	  var areaList = JsonFileTools.getJsonFromFile(path3);
-
-	  if(user && user.level === 2){
+	  var areaList = JsonFileTools.getJsonFromFile(path);//All of citys data list
+	  var keys = Object.keys(areaList);//All of citys with data
+	  console.log("areaList :"+JSON.stringify(areaList));
+	  if(user && user.level !== 3){
 		    error = false;
-			city = citys[user.area];
-			list = areaList[city];
-			if(list){
-				for(var i=0;i<list.length;i++){
-					//console.log('town:'+Object.keys(list[i])[0]);
-					township.push(Object.keys(list[i])[0]);
-					//
-					if(i===0){
-						//district list of first town
-						district = list[i][Object.keys(list[i])[0]];
-					}
-				}
-				console.log('township:'+JSON.stringify(township));
-				console.log('district:'+JSON.stringify(district));
+			city = user.city;
+			if(city==='無'){
+				city = keys[0];
 			}
+			list = areaList[city];
+			if(list === null || list === undefined){
+				list = areaList[keys[0]];
+			}
+			for(var i=0;i<list.length;i++){
+				//console.log('town:'+Object.keys(list[i])[0]);
+				township.push(Object.keys(list[i])[0]);
+				//
+				if(i===0){
+					//district list of first town
+					district = list[i][Object.keys(list[i])[0]];
+				}
+			}
+			console.log('township:'+JSON.stringify(township));
+			console.log('district:'+JSON.stringify(district));
 	  }
 	  
 	  res.render('board', { title: 'Board',
@@ -56,7 +60,7 @@ module.exports = function(app) {
 			city : city,
 			township:township,
 			district: district,
-			list: list,
+			areaList: areaList,
 			error
 	  });
   });
@@ -148,6 +152,7 @@ module.exports = function(app) {
   app.get('/register', function (req, res) {
 	var account = req.flash('post_account').toString();
 	var successMessae,errorMessae;
+	
   	
 	if(account==''){
 		//Redirect from login
@@ -157,6 +162,7 @@ module.exports = function(app) {
 			username:null,
 			password:null,
 			confirm:null,
+			citys:citys,
 			error: errorMessae
 		});
 	}else{
@@ -165,6 +171,7 @@ module.exports = function(app) {
 		var password = req.flash('post_password').toString();
 		var email = req.flash('post_email').toString();
 		var confirm = req.flash('post_confirm').toString();
+		var city = req.flash('post_city').toString();
 		
 		
 		var count = 0;
@@ -174,6 +181,7 @@ module.exports = function(app) {
 		console.log('Debug register get -> password:'+ password);
 		console.log('Debug register get -> email:'+ email);
 		console.log('Debug register get -> confirm:'+ confirm);
+		console.log('Debug register get -> city:'+ city);
 		
 		var test = false;
 		if(test == true){ //for debug to remove all users
@@ -194,35 +202,27 @@ module.exports = function(app) {
 					username:name,
 					password:password,
 					confirm:confirm,
+					citys:citys,
 					error: errorMessae
 				});
 			}
 			console.log('Debug register user -> name: '+user);
 			if(user != null ){
 				errorMessae = '帳號已註冊,請更換帳號再註冊!';
-				res.render('user/register', { title: 'Register',
-					account:account,
-					email:email,
-					username:name,
-					password:password,
-					confirm:confirm,
-					error: errorMessae
-				});
+				registerError
+				registerError(res,errorMessae);
 			}else{
 				
-				User.saveUser(account,email,name,password,function(err,result){
+				User.saveUser(account,email,name,password,city,function(err,result){
 					if(err){
 						errorMessae = '註冊失敗,請重新註冊!';
-						res.render('user/register', { title: 'Register',
-							account:account,
-							email:email,
-							username:name,
-							password:password,
-							confirm:confirm,
-							error: errorMessae
-						});
+						registerError(res,errorMessae);
 					}
 					//跳到註冊成功頁面
+					User.findUserByAccount(account,function(err,user){
+						req.session.user = user;
+						return res.redirect('/');
+					});
 				});
 			}
 		});
@@ -237,41 +237,35 @@ module.exports = function(app) {
 		var	username = req.body.username;
 		var	password = req.body.password;
 		var	confirm = req.body.confirm;
+		var	city = req.body.city;
+		var areaList = JsonFileTools.getJsonFromFile(path);//All of citys data list
+	  	var keys = Object.keys(areaList);//All of citys with data
+		var index = keys.indexOf(city);
 		var successMessae,errorMessae;
 		if(!validateEmail(email)){
 			errorMessae = '電子信箱格式不正確!';
-			res.render('user/register', { title: 'Register',
-			    account:account,
-				email:email,
-				username:username,
-				password:password,
-				confirm:confirm,
-				error: errorMessae
-			});
-		}
-		if(password !== confirm){
+			registerError(res,account,email,username,password,confirm,citys,errorMessae);
+		}else if(password !== confirm){
 			errorMessae = '確認密碼不正確!';
-			res.render('user/register', { title: 'Register',
-			    account:account,
-				email:email,
-				username:username,
-				password:password,
-				confirm:confirm,
-				error: errorMessae
-			});
+			registerError(res,account,email,username,password,confirm,citys,errorMessae);
+		}else if(index<0){
+			errorMessae = '你選擇的城市目前無資料!目前有資料的城市如下:\n'+JSON.stringify(keys);
+			registerError(res,account,email,username,password,confirm,citys,errorMessae);
+		}else {
+			console.log('account:'+account);
+			console.log('email:'+email);
+			console.log('username:'+username);
+			console.log('password:'+password);
+			console.log('confirm:'+confirm);
+			console.log('confirm:'+city);
+			req.flash('post_account', account);
+			req.flash('post_name', username);
+			req.flash('post_password', password);
+			req.flash('post_email', email);
+			req.flash('post_confirm', confirm);
+			req.flash('post_city', city);
+			return res.redirect('/register');
 		}
-		
-		console.log('account:'+account);
-		console.log('email:'+email);
-		console.log('username:'+username);
-		console.log('password:'+password);
-		console.log('confirm:'+confirm);
-		req.flash('post_account', account);
-		req.flash('post_name', username);
-		req.flash('post_password', password);
-		req.flash('post_email', email);
-		req.flash('post_confirm', confirm);
-		return res.redirect('/register');
   });
 
   app.get('/logout', function (req, res) {
@@ -285,7 +279,7 @@ module.exports = function(app) {
 		console.log('render to account.ejs');
 		var refresh = req.flash('refresh').toString();
 		var myuser = req.session.user;
-		var myusers = req.session.userS;
+		var citys = settings.citys;
 		var successMessae,errorMessae;
 		var post_name = req.flash('name').toString();
 
@@ -300,18 +294,61 @@ module.exports = function(app) {
 				successMessae = 'Edit account ['+post_name+'] is finished!';
 			}
 			req.session.userS = users;
+			var myusers = req.session.userS;
 			console.log('Debug account get -> users:'+users.length+'\n'+users);
-			console.log('----------------------------------------------------------------');
-			console.log('Debug account get -> users:'+users[0].authz.a01);
-			console.log('----------------------------------------------------------------');
+			
 			//console.log('Debug account get -> user:'+mUser.name);
-			res.render('user/account', { title: 'Manager', // user/account : ejs path
+			res.render('user/account', { title: 'Account', // user/account : ejs path
 				user:myuser,//current user : administrator
 				users:users,//All users
+				citys:citys,
 				error: errorMessae,
 				success: successMessae
 			});
 		});
+    });
+
+	app.post('/account', function (req, res) {
+
+		var	mode = req.body.postMode;
+		var account = req.body.postAccount;
+		
+		if(mode === 'del'){
+			User.removeUserByAccount(post_name,function(err,result){
+				if(err){
+					console.log('removeUserByName :'+post_name+ " fail! \n" + err);
+					errorMessae = err;
+				}else{
+					console.log('removeUserByName :'+post_name + 'success');
+					successMessae = successMessae;
+				}
+				UserDbTools.findAllUsers(function (err,users){
+					console.log('查詢到帳戶 :'+users.length);
+				});
+				req.flash('refresh','delete');//For refresh users data
+				return res.redirect('/account');
+			});
+
+		}else{
+			var	name = req.body.postName;
+			var	level = Number(req.body.postLevel);
+			var	enable = req.body.postEnable;
+			var json = {name:name,level:level,enable:enable};
+
+			console.log('updateUser json:'+json );
+
+			User.updateUser(account,json,function(err,result){
+				if(err){
+					console.log('updateUser :'+account + err);
+					errorMessae = err;
+				}else{
+					console.log('updateUser :'+account + 'success');
+					successMessae = successMessae;
+				}
+				req.flash('refresh','edit');//For refresh users data
+				return res.redirect('/account');
+			});
+		}	
     });
 };
 
@@ -344,4 +381,17 @@ function validateEmail(sEmail) {
 		return false;
 	}
 	return true;
+}
+
+function registerError(res,account,email,username,password,confirm,citys,msg) {
+	
+	res.render('user/register', { title: 'Register',
+		account:account,
+		email:email,
+		username:username,
+		password:password,
+		confirm:confirm,
+		citys:citys,
+		error: msg
+	});
 }
