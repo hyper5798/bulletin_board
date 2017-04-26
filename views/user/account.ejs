@@ -1,7 +1,7 @@
 <%- include ../extend/header %>
 <section id="contact">
     <div class="container wow fadeInUp">
-      <div class="row">
+      <div id ="mTitle" class="row">
         <div class="col-md-12">
           <h3 class="section-title">帳戶管理</h3>
           <div class="section-title-divider"></div>
@@ -34,8 +34,9 @@
 		<br>
 	</div>
 	<% } %>
-	<div class="row">
-		<div class="col-md-12 column">
+  <div id="page-wrapper" >
+	<div  class="row">
+		<div  class="col-md-12 column">
 			<form method = "post" id="accountList" name="accountList">
 
 				<table id="table1"  class="display" cellspacing="0" width="100%">
@@ -51,10 +52,11 @@
 							</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody >
 					<% if (users) { %>
 						<% for(var i = 0;i<users.length;i++) { %>
 							<tr>
+
 								<td>
 									<%= users[i].account %>
 								</td>
@@ -138,7 +140,7 @@
 
 		</div> <!-- column-->
 	</div>	<!--row-->
-
+  </div>	<!--page-wrapper-->
 <!-- （Modal） -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
    aria-labelledby="myModalLabel" aria-hidden="true">

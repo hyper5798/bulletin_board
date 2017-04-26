@@ -11,7 +11,8 @@ var opt={"oLanguage":{"sProcessing":"處理中...",
                                           "sLast":"尾頁"}
                      },
                      /*"order": [[ 2, "desc" ]],*/
-                     "iDisplayLength": 25,
+                     "iDisplayLength": 5,
+                     "lengthChange": false,//Hide the Show Entries dropdown
                      "bSort" : false,
                      "searching": false
                };
@@ -70,7 +71,7 @@ $(document).ready(function(){
 
     setTimeout(function(){
         //do what you need here
-        //alert('test');
+        document.getElementById('mTitle').style.display = "none";
         document.getElementById('showBlock').style.display = "none";
     }, 5000);
 

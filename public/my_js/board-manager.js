@@ -11,7 +11,8 @@ var opt={"oLanguage":{"sProcessing":"處理中...",
                                           "sLast":"尾頁"}
                      },
                      /*"order": [[ 2, "desc" ]],*/
-                     "iDisplayLength": 25,
+                     "iDisplayLength": 5,
+                     "lengthChange": false,//Hide the Show Entries dropdown
                      "bSort" : false,
                      "searching": false
                };
@@ -26,6 +27,12 @@ var datas = JSON.parse(dataStr);
 var data;
 
 $(function(){
+    setTimeout(function(){
+        //do what you need here
+        document.getElementById('mTitle').style.display = "none";
+        document.getElementById('showBlock').style.display = "none";
+    }, 5000);
+
     $('.rows').click(function(){
         var index = $(this).index();
         data = datas[index];
@@ -37,11 +44,14 @@ $(function(){
 });
 
 function uploadCheck(){
+
     if(data){
       postMode.value = 'upload';
       postId.value = data._id;
+      postData.value = JSON.stringify(data);
 
       document.getElementById("editBoard").submit();
+      document.getElementById("send").disabled = true;
     }
 }
 
@@ -51,8 +61,8 @@ function rejectCheck(){
     if(data){
       postMode.value = 'reject';
       postId.value = data._id;
-      postData.value = data;
 
       document.getElementById("editBoard").submit();
+      document.getElementById("reject").disabled = true;
     }
 }

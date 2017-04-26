@@ -3,6 +3,7 @@ var router = express.Router();
 var ListDbTools = require('../models/listDbTools.js');
 var User =  require('../models/user.js');
 var Review =  require('../models/review.js');
+var Cloud =  require('../models/cloud.js');
 var settings = require('../settings');
 var JsonFileTools =  require('../models/jsonFileTools.js');
 var path = './public/data/areaList.json';
@@ -31,7 +32,7 @@ module.exports = function(app) {
 	  var areaList = JsonFileTools.getJsonFromFile(path);//All of citys data list
 	  var keys = Object.keys(areaList);//All of citys with data
 	  console.log("areaList :"+JSON.stringify(areaList));
-	  if(user && user.level !== 3){
+	  if(user && user.enable && user.level !== 3){
 		    error = false;
 			city = user.city;
 			if(city==='無'){
@@ -280,7 +281,7 @@ module.exports = function(app) {
   app.get('/board-manager', function (req, res) {
 	  var user = req.session.user;
 	  var errorMessage;
-	  if(user && user.level<2){
+	  if(user && user.enable && user.level<2){
 		  var json = {enable:0,city:user.city};
 		  Review.findDatas(json,function(err,datas){
 			  if(err){
@@ -301,20 +302,40 @@ module.exports = function(app) {
 	  
 	  var mode = req.body.postMode;
 	  var id = req.body.postId;
-	  var data = req.body.postData;
-      var successMessae,errorMessae;
+	  var data = JSON.parse(req.body.postData);
+      var errorMessage;
 	  var status = 0;
 
 	  if(mode === 'reject'){
 		   status = 2;
 	  }else{
 		  status = 1;
+		  Cloud.store(data.subject,data.content,function(err,result){
+			  if(err){
+				  status = 0;
+				  errorMessage = "上傳失敗,請稍待一會再重傳"; 
+				  req.flash('error',errorMessage);
+			      req.flash('refresh',mode);//For refresh data 
+		          return res.redirect('/board-manager'); 
+			  }
+			  var json = {enable:status};
+			  Review.updateData(id,json,function(err,datas){
+					if(err){
+						//For refresh error message
+					}
+					req.flash('error',errorMessage);
+					req.flash('refresh',mode);//For refresh data 
+					return res.redirect('/board-manager');
+			  });
+		  });
+		  return;
 	  }
 	  var json = {enable:status};
 	  Review.updateData(id,json,function(err,datas){
 			if(err){
-				req.flash('error',error);//For refresh error message
+				//For refresh error message
 			}
+			req.flash('error',error);
 			req.flash('refresh',mode);//For refresh data 
 			return res.redirect('/board-manager');
 	  });
@@ -323,7 +344,7 @@ module.exports = function(app) {
  
     app.get('/account', function (req, res) {
 	 var myuser = req.session.user;
-	 if(myuser && myuser.level<2){
+	 if(myuser && myuser.enable && myuser.level<2){
 		  console.log('render to account.ejs');
 			var refresh = req.flash('refresh').toString();
 			

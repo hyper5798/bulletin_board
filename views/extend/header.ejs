@@ -92,7 +92,7 @@
               <li><a href="/login">登入</a></li>
           <% } %>
           <% if(user){ %>
-            <% if(user.level <2){ %>
+            <% if(user.enable && user.level <2){ %>
               <li class="menu-has-children"><a href="">管理</a>
                 <ul>
                   <li><a href="board-manager">布告</a></li>

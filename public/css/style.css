@@ -469,7 +469,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 }
 
 .section-title-divider {
-  width: 50px;
+  width: 200px;
   height: 3px;
   background: #03C4EB;
   margin: 0 auto;
@@ -908,4 +908,14 @@ form3-inner {
   -webkit-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.31);
     -moz-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.31);
     box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.31);
+}
+textarea
+{
+  width:100%;
+}
+.textwrapper
+{
+  border:1px solid #999999;
+  margin:5px 0;
+  padding:3px;
 }
