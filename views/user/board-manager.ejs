@@ -1,0 +1,122 @@
+﻿<%- include ../extend/header %>
+
+<!--==========================
+  About Section
+============================-->
+<!--==========================
+  Contact Section
+============================-->
+<section id="contact">
+    <div class="container wow fadeInUp">
+      <div class="row">
+        <div class="col-md-12">
+          <h3 class="section-title">佈告管理</h3>
+          <div class="section-title-divider"></div>
+            <p class="section-description">「說明 : 移動滑鼠點選表單進行審核」</p>
+       </div>
+    </div>
+
+    <div id="page-wrapper" >
+      <form id="editBoard" class="form-horizontal" action="" method="post">
+
+        <!-- /. PAGE INNER  -->
+        <!--<div id="form1-inner">-->
+            <div class="row">
+                <div class="col-md-12">
+                 <table border="1" class="table table-striped table-hover">
+                    <tr >
+                      <th width="20%" bgcolor="#428bca">
+                        <div  style="color:white;" >主旨</div>
+                      </th>
+                      <th width="60%">
+                        <input id="subject" name="subject" type="text" class="form-control" disabled="disabled"/>
+                      </th>
+                      <th width="20%">
+                        <button type="button" name="send" class="btn btn-primary btn-sm" onClick="uploadCheck()">
+                          上傳
+                        </button>
+                      </th>
+                    </tr>
+                    <tr >
+                      <th width="20%" bgcolor="#428bca">
+                          <div  style="color:white;" >內容</div>
+                      </th>
+                      <th  width="80%">
+                          <textarea  id="content" name="content" rows="3" cols="90" maxlength="300" disabled="disabled">
+                          </textarea>
+                      </th>
+                      <th width="20%">
+                        <button type="button" name="reject" class="btn btn-danger btn-sm" onClick="rejectCheck()">
+                          退件
+                        </button>
+                      </th>
+                    </tr>
+                  </table>
+                </div>
+            </div>
+             <!-- /. ROW  -->
+        <!--</div>-->
+        <!-- /. form1-inner  -->
+        <div id="form3-inner">
+
+            <div class="row">
+                <div class="col-md-12">
+                  <table id="table1"  class="display" cellspacing="0" width="100%">
+                      <thead>
+                        <tr style="color:#428bca">
+                          <th>帳戶</th>
+                          <th>姓名</th>
+                          <th>日期</th>
+                          <th>縣市別</th>
+                          <th>鄉鎮市</th>
+                          <th>村里別</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% if (datas) { %>
+                        <% for(var i = 0;i<datas.length;i++) { %>
+                          <tr class="rows">
+                            <td>
+                              <%= datas[i].account %>
+                            </td>
+                            <td>
+                              <%= datas[i].name %>
+                            </td>
+                            <td>
+                              <%= datas[i].created_at %>
+                            </td>
+                            <td>
+                              <%= datas[i].city %>
+                            </td>
+                            <td>
+                              <%= datas[i].township %>
+                            </td>
+                            <td>
+                              <%= datas[i].district %>
+
+                            </td>
+                            <td>
+                               <input id="city" name="city" value ="<%= datas[i]._id %>" type="hidden"">
+
+                            </td>
+                          </tr>
+                        <% } %>
+                      <% } %>
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+             <!-- /. ROW  -->
+        </div>
+        <!-- /. form2-inner  -->
+        <input id="datas" name="datas" value="<%= JSON.stringify(datas) %>" type="hidden">
+        <input id="postMode" name="postMode" type="hidden">
+        <input id="postData" name="postData" type="hidden">
+        <input id="postId" name="postId" type="hidden">
+      </form>
+    </div>
+    <!-- /. PAGE WRAPPER  -->
+
+</section>
+<%- include ../extend/footer %>

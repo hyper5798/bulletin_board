@@ -1,17 +1,19 @@
 var opt={"oLanguage":{"sProcessing":"處理中...",
-                                     "sLengthMenu":"顯示 _MENU_ 項結果",
-                                     "sZeroRecords":"沒有匹配結果",
-                                     "sInfo":"顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
-                                     "sInfoEmpty":"顯示第 0 至 0 項結果，共 0 項",
-                                     "sInfoFiltered":"(從 _MAX_ 項結果過濾)",
-                                     "sSearch":"搜索:",
-                                     "oPaginate":{"sFirst":"首頁",
-                                                          "sPrevious":"上頁",
-                                                          "sNext":"下頁",
-                                                          "sLast":"尾頁"}
-                                     },
-                                     "order": [[ 2, "desc" ]],
-                                     "iDisplayLength": 25
+                     "sLengthMenu":"顯示 _MENU_ 項結果",
+                     "sZeroRecords":"沒有匹配結果",
+                     "sInfo":"顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
+                     "sInfoEmpty":"顯示第 0 至 0 項結果，共 0 項",
+                     "sInfoFiltered":"(從 _MAX_ 項結果過濾)",
+                     "sSearch":"搜索:",
+                     "oPaginate":{"sFirst":"首頁",
+                                          "sPrevious":"上頁",
+                                          "sNext":"下頁",
+                                          "sLast":"尾頁"}
+                     },
+                     /*"order": [[ 2, "desc" ]],*/
+                     "iDisplayLength": 25,
+                     "bSort" : false,
+                     "searching": false
                };
 var opt2={
      "order": [[ 2, "desc" ]],
@@ -19,14 +21,14 @@ var opt2={
  };
 
 var table = $("#table1").dataTable(opt);
-var postMode = document.getElementById("postMode");
+var postMode    = document.getElementById("postMode");
 var postAccount = document.getElementById("postAccount");
 var postName    = document.getElementById("postName");
-var postLevel    = document.getElementById("postLevel");
-var postEnable    = document.getElementById("postEnable");
+var postLevel   = document.getElementById("postLevel");
+var postEnable  = document.getElementById("postEnable");
 
 function editCheck(index,account){
-    console.log(index+" : "+account);
+
     postMode.value = 'edit';
 
     var arrEnable = $('[name=enable]');
@@ -52,10 +54,11 @@ function editCheck(index,account){
 
 
 function delCheck(index,account){
-
-    console.log(index+" : "+account);
     postMode.value = 'del';
-    document.getElementById("accountList").submit();
+    postAccount.value = account;
+    document.getElementById("del-account").innerText='確定刪除 '+account+' 帳戶嗎?';
+    $('#myModal').modal('show');
+
 }
 
 function toSubmit(){
@@ -65,4 +68,10 @@ function toSubmit(){
 
 $(document).ready(function(){
 
-});
+    setTimeout(function(){
+        //do what you need here
+        //alert('test');
+        document.getElementById('showBlock').style.display = "none";
+    }, 5000);
+
+} );

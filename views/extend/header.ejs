@@ -77,10 +77,12 @@
 
       <nav id="nav-menu-container">
         <ul class="nav-menu">
-          <% if(title ==='Account' || user===undefined || user ===null){ %>
+          <% if( user===undefined || user ===null){ %>
           <li class="menu-active"><a href="/">首頁</a></li>
           <% } %>
-          <% if(title !=='Account'){ %>
+          <% if(title === 'Account' || title === 'Board-Manager' ){ %>
+              <li><a href="/">電子布告欄</a><li>
+          <% }else{ %>
               <li><a href="#portfolio">電子布告欄</a></li>
           <% } %>
           <% if(user){ %>
@@ -93,8 +95,7 @@
             <% if(user.level <2){ %>
               <li class="menu-has-children"><a href="">管理</a>
                 <ul>
-                  <li><a href="#">里長資訊</a></li>
-                  <li><a href="#">布告</a></li>
+                  <li><a href="board-manager">布告</a></li>
                   <% if( user.level < 2){ %>
                     <li><a href="/account">帳戶</a></li>
                   <% } %>
@@ -102,9 +103,11 @@
               </li>
             <% } %>
           <% } %>
-          <% if(title !=='Account'){ %>
+          <% if(title !=='Account' && title !=='Board-Manager'){ %>
               <li><a href="#contact">聯絡我們</a></li>
-          <% } %>
+           <% }else{ %>
+              <li><a>&nbsp&nbsp&nbsp&nbsp</a></li>
+           <% } %>
 
         </ul>
       </nav><!-- #nav-menu-container -->

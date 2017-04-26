@@ -7,18 +7,20 @@ var reviewSchema = new Schema({
   city: { type: String},
   township: { type: String},
   district: { type: String},
+  account: { type: String},
+  name: { type: String},
   subject: { type: String},
   content: { type: String},
-  enable: { type: Number},
-  created_at: { type: Date},
-  update_at:{ type: Date}
+  enable: { type: Number},//0:no review 1:upload 2:reject
+  created_at: { type: String},
+  update_at:{ type: String}
 });
 
 // the schema is useless so far
 // we need to create a model using it
 var reviewModel = mongoose.model('Review', reviewSchema);
 
-function saveData(city,township,district,subject,content,callback) {
+function saveData(city,township,district,subject,content,account,name,callback) {
   
   var time =  moment().format("YYYY-MM-DD HH:mm:ss");
   console.log(time +' Debug : review saveData');
@@ -26,6 +28,8 @@ function saveData(city,township,district,subject,content,callback) {
     city: city,
     township: township,
     district: district,
+    account: account,
+    name:name,
     subject: subject,
     content: content,
     enable: 0,
@@ -45,134 +49,93 @@ function saveData(city,township,district,subject,content,callback) {
 
 exports.saveData =  saveData;
 
-/*exports.saveHead = function (city,township,district,subject,content,callback) {
-  console.log(moment().format('YYYY-MM-DD HH:mm:ss')+' Debug : saveUser()');
+function updateData(dataId,json,calllback) {
+  console.log(moment().format('YYYY-MM-DD HH:mm:ss')+' Debug : updateData()');
   
-  var time =  moment().format("YYYY-MM-DD HH:mm:ss");
-
-  console.log('Debug saveUser -> name :'+name);
-  var newHead = new HeadModel({
-    city: city,
-    township: township,
-    district: district,
-    subject: subject,
-    content: content,
-    enable: 0,
-    update_at:time,
-    created_at: time
-  });
-  newHead.save(function(err){
-    if(err){
-      console.log('Debug : User save fail!/n'+err);
-      return callback(err);
-    }
-    console.log('Debug : User save success!');
-      return callback(err,'success');
-  });
-
-};*/
-
-/*
-*Update name,password,authz
-*json:{password : password, level : level ,autthz:authz }
-*/
-exports.updateUser = function (name,json,calllback) {
-  console.log(moment().format('YYYY-MM-DD HH:mm:ss')+' Debug : updateUser()');
-  console.log('Debug : updateUser name='+name);
   var time =  moment().format("YYYY-MM-DD HH:mm:ss");
   json.update_at=time;
 
-  if(name){
-    UserModel.find({ name: name },function(err,users){
-      if(err){
-        console.log('Debug : updateUser find user by name =>'+err);
-        return calllback(err);
+  reviewModel.update({_id : dataId},
+    json,
+    {safe : true, upsert : true},
+    (err, rawResponse)=>{
+      if (err) {
+                console.log('Debug : update dataId : '+ err);
+                return calllback(err);
+      } else {
+                console.log('Debug : update data : success');
+          return calllback(err,'success');
+        }
       }
-      if(users.length>0){
-        var userId = users[0]._id;
-        console.log('Debug : getUserId device ' + users);
-        console.log('Debug : getUserId : ' +userId);
-        UserModel.update({_id : userId},
-          json,
-          {safe : true, upsert : true},
-          (err, rawResponse)=>{
-            if (err) {
-                      console.log('Debug : updateUser : '+ err);
-                      return calllback(err);
-            } else {
-                      console.log('Debug : updateUser : success');
-                return calllback(err,'success');
-              }
-            }
-          );
-      }else{
-        console.log('Debug : updateUser can not find user!');
-        return calllback('Can not find user!');
-      }
-    });
-  }else{
-    console.log('Debug : updateUser no referance');
-        return calllback('Referance nul!');
-  }
+    );
 };
+
+exports.updateData = updateData;
 
 /*
 *Remove all of users
 *Return -1:資料存取錯誤 0:刪除完成 1:刪除失敗
 */
-exports.removeAllUsers = function (calllback) {
-    UserModel.remove({}, (err)=>{
+function removeAllData(calllback) {
+    reviewModel.remove({}, (err)=>{
       console.log(moment().format('YYYY-MM-DD HH:mm:ss')+' Debug : removeAllUsers');
       if (err) {
-        console.log('Debug : User remove all occur a error:', err);
+        console.log('Debug :  remove all data occur a error:', err);
             return calllback(err);
       } else {
-        console.log('Debug : User remove all success.');
+        console.log('Debug : remove all data is success.');
             return calllback(err,'success');
       }
     });
 };
 
-exports.removeUserByName = function (name,calllback) {
-    UserModel.remove({name:name}, (err)=>{
-      console.log(moment().format('YYYY-MM-DD HH:mm:ss')+' Debug : removeUserByName()');
+exports.removeAllData = removeAllData;
+
+function removeData(json,calllback) {
+    reviewModel.remove(json, (err)=>{
+      console.log(moment().format('YYYY-MM-DD HH:mm:ss')+' Debug : remove data');
       if (err) {
-        console.log('Debug : User remove name :'+name+' occur a error:', err);
+        console.log('Debug : remove data occur a error:', err);
             return calllback(err);
       } else {
-        console.log('Debug : User remove name :'+name+' success.');
+        console.log('Debug : remove data success.');
             return calllback(err,'success');
       }
     });
 };
+
+exports.removeData = removeData;
 
 /*Find all of users
 */
-exports.findAllUsers = function (calllback) {
+function findAllUsers(calllback) {
     console.log(moment().format('YYYY-MM-DD HH:mm:ss')+' Debug : findAllUsers()');
-    UserModel.find((err, users) => {
+    reviewModel.find((err, datas) => {
       if (err) {
-        console.log('Debug : findAllUsers err:', err);
+        console.log('Debug : findAllDatas err:', err);
             return calllback(err);
       } else {
-            console.log('Debug : findAllUsers success\n:',users.length);
-        return calllback(err,users);
+            console.log('Debug : findAllDatas success\n:',datas.length);
+        return calllback(err,datas);
       }
     });
 };
+exports.findAllUsers = findAllUsers;
 
-exports.findUserByAccount = function (account,calllback) {
-    console.log(moment().format('YYYY-MM-DD HH:mm:ss')+' Debug : findUserByName()');
-    UserModel.find({ account: account }, function(err,users){
+function findDatas(json,calllback) {
+    console.log(moment().format('YYYY-MM-DD HH:mm:ss')+' Debug : find data');
+    reviewModel.find(json, function(err,datas){
       if(err){
         return callback(err);
       }
-      if (users.length>0) {
-        console.log('find '+users);
-        return calllback(err,users[0]);
+      if (datas.length>0) {
+        console.log('find '+datas.length);
+        return calllback(err,datas);
       }else{
         console.log('找不到資料!');
         return calllback(err,null);
       }
     });
 };
+
+exports.findDatas = findDatas;

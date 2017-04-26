@@ -71,13 +71,17 @@ module.exports = function(app) {
 	var	district = req.body.mDistrict;
 	var	subject = req.body.mSubject;
 	var	content = req.body.mContent;
+	var	account = req.body.mAccount;
+	var	name = req.body.mName;
   	console.log('Debug board post -> city:'+city);
 	console.log('Debug login post -> township:'+township);
 	console.log('Debug board post -> district:'+district);
 	console.log('Debug login post -> subject:'+subject);
 	console.log('Debug login post -> content:'+content);
+	console.log('Debug login post -> account:'+account);
+	console.log('Debug login post -> name:'+name);
 
-	Review.saveData(city,township,district,subject,content,function(err,result){
+	Review.saveData(city,township,district,subject,content,account,name,function(err,result){
 		if(err){
 			console.log('Debug board Review.saveData -> err:'+err);
 		}
@@ -273,59 +277,110 @@ module.exports = function(app) {
     res.redirect('/');
   });
 
+  app.get('/board-manager', function (req, res) {
+	  var user = req.session.user;
+	  var errorMessage;
+	  if(user && user.level<2){
+		  var json = {enable:0,city:user.city};
+		  Review.findDatas(json,function(err,datas){
+			  if(err){
+				console.log('Debug board Review.saveData -> err:'+err);
+			  }
+			  res.render('user/board-manager', { title: 'Board-Manager',
+				user:user,
+				datas:datas,
+				error:errorMessage
+			  });
+		  });
+	  }else{
+		  return res.redirect('/');
+	  }
+  });
+
+  app.post('/board-manager', function (req, res) {
+	  
+	  var mode = req.body.postMode;
+	  var id = req.body.postId;
+	  var data = req.body.postData;
+      var successMessae,errorMessae;
+	  var status = 0;
+
+	  if(mode === 'reject'){
+		   status = 2;
+	  }else{
+		  status = 1;
+	  }
+	  var json = {enable:status};
+	  Review.updateData(id,json,function(err,datas){
+			if(err){
+				req.flash('error',error);//For refresh error message
+			}
+			req.flash('refresh',mode);//For refresh data 
+			return res.redirect('/board-manager');
+	  });
+  });
+
  
     app.get('/account', function (req, res) {
-
-		console.log('render to account.ejs');
-		var refresh = req.flash('refresh').toString();
-		var myuser = req.session.user;
-		var citys = settings.citys;
-		var successMessae,errorMessae;
-		var post_name = req.flash('name').toString();
-
-		console.log('Debug account get -> refresh :'+refresh);
-		User.findAllUsers(function (err,users){
-			if(err){
-				errorMessae = err;
-			}
-			if(refresh == 'delete'){
-				successMessae = 'Delete account ['+post_name+'] is finished!';
-			}else if(refresh == 'edit'){
-				successMessae = 'Edit account ['+post_name+'] is finished!';
-			}
-			req.session.userS = users;
-			var myusers = req.session.userS;
-			console.log('Debug account get -> users:'+users.length+'\n'+users);
+	 var myuser = req.session.user;
+	 if(myuser && myuser.level<2){
+		  console.log('render to account.ejs');
+			var refresh = req.flash('refresh').toString();
 			
-			//console.log('Debug account get -> user:'+mUser.name);
-			res.render('user/account', { title: 'Account', // user/account : ejs path
-				user:myuser,//current user : administrator
-				users:users,//All users
-				citys:citys,
-				error: errorMessae,
-				success: successMessae
+			var citys = settings.citys;
+			var successMessae,errorMessae;
+			var postAccount = req.flash('postAccount').toString();
+
+			console.log('Debug account get -> refresh :'+refresh);
+			User.findAllUsers(function (err,users){
+				if(err){
+					errorMessae = err;
+				}
+				if(refresh == 'delete'){
+					errorMessae = '刪除帳號 ['+postAccount+'] 完成!';
+				}else if(refresh == 'edit'){
+					errorMessae = '更新帳號 ['+postAccount+'] 完成!';
+				}
+				req.session.userS = users;
+				var myusers = req.session.userS;
+				console.log('Debug account get -> users:'+users.length+'\n'+users);
+				
+				//console.log('Debug account get -> user:'+mUser.name);
+				res.render('user/account', { title: 'Account', // user/account : ejs path
+					user:myuser,//current user : administrator
+					users:users,//All users
+					citys:citys,
+					error: errorMessae,
+					success: successMessae
+				});
 			});
-		});
+	  }else{
+		  return res.redirect('/');
+	  }
+
+		
     });
 
 	app.post('/account', function (req, res) {
 
 		var	mode = req.body.postMode;
 		var account = req.body.postAccount;
+		var successMessae,errorMessae;
 		
 		if(mode === 'del'){
-			User.removeUserByAccount(post_name,function(err,result){
+			User.removeUserByAccount(account,function(err,result){
 				if(err){
-					console.log('removeUserByName :'+post_name+ " fail! \n" + err);
+					console.log('removeUserByAccount :'+account+ " fail! \n" + err);
 					errorMessae = err;
 				}else{
-					console.log('removeUserByName :'+post_name + 'success');
+					console.log('removeUserByAccount :'+account + 'success');
 					successMessae = successMessae;
 				}
-				UserDbTools.findAllUsers(function (err,users){
+				User.findAllUsers(function (err,users){
 					console.log('查詢到帳戶 :'+users.length);
 				});
 				req.flash('refresh','delete');//For refresh users data
+				req.flash('postAccount',account);//For refresh users data
 				return res.redirect('/account');
 			});
 
@@ -343,9 +398,9 @@ module.exports = function(app) {
 					errorMessae = err;
 				}else{
 					console.log('updateUser :'+account + 'success');
-					successMessae = successMessae;
 				}
 				req.flash('refresh','edit');//For refresh users data
+				req.flash('postAccount',account);//For refresh users data
 				return res.redirect('/account');
 			});
 		}	
