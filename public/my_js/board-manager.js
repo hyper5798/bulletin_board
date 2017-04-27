@@ -30,7 +30,10 @@ $(function(){
     setTimeout(function(){
         //do what you need here
         document.getElementById('mTitle').style.display = "none";
-        document.getElementById('showBlock').style.display = "none";
+        if(document.getElementById('showBlock')){
+            document.getElementById('showBlock').style.display = "none";
+        }
+
     }, 5000);
 
     $('.rows').click(function(){
@@ -60,6 +63,7 @@ function rejectCheck(){
 
     if(data){
       postMode.value = 'reject';
+      postData.value = JSON.stringify(data);
       postId.value = data._id;
 
       document.getElementById("editBoard").submit();

@@ -163,3 +163,21 @@ exports.findUserByAccount = function (account,calllback) {
       }
     });
 };
+
+function findUser(json,calllback) {
+    console.log(moment().format('YYYY-MM-DD HH:mm:ss')+' Debug : findUserByName()');
+    UserModel.find(json, function(err,users){
+      if(err){
+        return callback(err);
+      }
+      if (users.length>0) {
+        console.log('find '+users);
+        return calllback(err,users[0]);
+      }else{
+        console.log('找不到資料!');
+        return calllback(err,null);
+      }
+    });
+};
+
+exports.findUser = findUser;

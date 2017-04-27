@@ -310,7 +310,7 @@ module.exports = function(app) {
 		   status = 2;
 	  }else{
 		  status = 1;
-		  Cloud.store(data.subject,data.content,function(err,result){
+		  /*Cloud.store(data.subject,data.content,function(err,result){
 			  if(err){
 				  status = 0;
 				  errorMessage = "上傳失敗,請稍待一會再重傳"; 
@@ -328,14 +328,15 @@ module.exports = function(app) {
 					return res.redirect('/board-manager');
 			  });
 		  });
-		  return;
+		  return;*/
 	  }
 	  var json = {enable:status};
 	  Review.updateData(id,json,function(err,datas){
 			if(err){
 				//For refresh error message
+				errorMessage = err;
 			}
-			req.flash('error',error);
+			req.flash('error',errorMessage);
 			req.flash('refresh',mode);//For refresh data 
 			return res.redirect('/board-manager');
 	  });
@@ -351,9 +352,10 @@ module.exports = function(app) {
 			var citys = settings.citys;
 			var successMessae,errorMessae;
 			var postAccount = req.flash('postAccount').toString();
-
 			console.log('Debug account get -> refresh :'+refresh);
-			User.findAllUsers(function (err,users){
+			var json =  {"level": {"$gte": myuser.level, "$lt": 3}};
+			console.log('Find json -> refresh :'+JSON.stringify(json));
+			User.findUser(json,function (err,users){
 				if(err){
 					errorMessae = err;
 				}
