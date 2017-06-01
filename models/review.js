@@ -5,11 +5,11 @@ var moment = require('moment');
 // create a schema
 var reviewSchema = new Schema({
   city: { type: String},
-  township: { type: String},
-  district: { type: String},
+  area: { type: String},
+  town: { type: String},
   account: { type: String},
   name: { type: String},
-  subject: { type: String},
+  title: { type: String},
   content: { type: String},
   enable: { type: Number},//0:no review 1:upload 2:reject
   created_at: { type: String},
@@ -20,17 +20,17 @@ var reviewSchema = new Schema({
 // we need to create a model using it
 var reviewModel = mongoose.model('Review', reviewSchema);
 
-function saveData(city,township,district,subject,content,account,name,callback) {
+function saveData(city,area,town,title,content,account,name,callback) {
   
   var time =  moment().format("YYYY-MM-DD HH:mm:ss");
   console.log(time +' Debug : review saveData');
   var newData = new reviewModel({
     city: city,
-    township: township,
-    district: district,
+    area: area,
+    town: town,
     account: account,
     name:name,
-    subject: subject,
+    title: title,
     content: content,
     enable: 0,
     update_at:time,

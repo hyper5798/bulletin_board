@@ -75,32 +75,32 @@
                           </select>
                         </td>
                         <td>
-                           <select id="mTownship" name="mTownship" onchange="townChange()" class="selectpicker">
-                            <% if(township) { %>
-                              <% for(var i=0;i<township.length;i++){ %>
+                           <select id="mArea" name="mArea" onchange="areaChange()" class="selectpicker">
+                            <% if(area) { %>
+                              <% for(var i=0;i<area.length;i++){ %>
                                   <% if(i === 0){ %>
-                                    <option value = "<%= township[i] %>" selected>
+                                    <option value = "<%= area[i] %>" selected>
                                   <% }else{ %>
-                                    <option value = "<%= township[i] %>" >
+                                    <option value = "<%= area[i] %>" >
                                   <% } %>
 
-                                  <%= township[i] %>
+                                  <%= area[i] %>
                                   </option>
                               <% } %>
                             <% } %>
                           </select>
                         </td>
                         <td>
-                           <select id="mDistrict" name="mDistrict" class="selectpicker">
-                            <% if(district) { %>
-                              <% for(var i=0;i<district.length;i++){ %>
+                           <select id="mTown" name="mTown" class="selectpicker">
+                            <% if(town) { %>
+                              <% for(var i=0;i<town.length;i++){ %>
                                   <% if(i === 0){ %>
-                                    <option value = "<%= district[i] %>" selected>
+                                    <option value = "<%= town[i] %>" selected>
                                   <% }else{ %>
-                                    <option value = "<%= district[i] %>" >
+                                    <option value = "<%= town[i] %>" >
                                   <% } %>
 
-                                  <%= district[i] %>
+                                  <%= town[i] %>
                                   </option>
                               <% } %>
                             <% } %>
@@ -126,7 +126,7 @@
                       </th>
                       <th width="75%">
                         <div>
-                          <input class="fa fa-2x" id="mSubject" name="mSubject" type="text" maxlength="20" size="50"/>
+                          <input class="fa fa-2x" id="mTitle" name="mTitle" type="text" maxlength="16" size="50"/>
                         </div>
                       </th>
                     </tr>
@@ -157,8 +157,8 @@
         </div>
         <!-- /. PAGE INNER  -->
         <input id="city" name="city" value ="<%= city%>" type="hidden"">
-        <input id="township" name="township" value ="<%= township%>" type="hidden"">
-        <input id="district" name="district" value ="<%= district%>" type="hidden"">
+        <input id="area" name="area" value ="<%= area%>" type="hidden"">
+        <input id="town" name="town" value ="<%= town%>" type="hidden"">
         <input id="mAccount" name="mAccount" value ="<%= user.account%>" type="hidden"">
         <input id="mName" name="mName" value ="<%= user.name%>" type="hidden">
         <input id="areaList" name="areaList" value ="<%= JSON.stringify(areaList)%>" type="hidden"">

@@ -29,7 +29,7 @@ var data;
 $(function(){
     setTimeout(function(){
         //do what you need here
-        document.getElementById('mTitle').style.display = "none";
+        //document.getElementById('mTitle').style.display = "none";
         if(document.getElementById('showBlock')){
             document.getElementById('showBlock').style.display = "none";
         }
@@ -41,7 +41,7 @@ $(function(){
         data = datas[index];
         //alert('data:'+JSON.stringify(data))
         //alert('row index = '+  index);
-        $('#subject').val(data.subject);
+        $('#title').val(data.title);
         $('#content').val(data.content);
     });
 });

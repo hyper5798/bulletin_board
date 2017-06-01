@@ -4,15 +4,21 @@ var crypto = require('crypto');
 var moment = require('moment');
 
 
-function store(title, content, callback) {
+function store(title, content, city,area,town,callback) {
     
-    var url = "https://s5-dropap.securepilot.com/tracker/v1/store_bulletin_board";
+    var url = "https://api.dropap.com/tracker/v1/store_bulletin_board";
+    var api_key = 'BLAZING-r99Xpaoqm';
     var time = new Date().getTime().toString();
     
-    var api_token = get_ApiToken(time);
 
-    request.post(url,{form:{title:title, content:content,api_key:settings.api_key,
-                             api_token:api_token, time:time }},
+    var api_token = get_ApiToken(time);
+    var form = {form:{title:title, content:content,city:city,area:area,town:town,
+                             api_key:api_key,api_token:api_token, time:time }};
+    
+    console.log('form : \n'+JSON.stringify(form));
+    
+    request.post(url,{form:{title:title, content:content,city:city,area:area,town:town,
+                             api_key:api_key,api_token:api_token, time:time }},
         function(err, result) {
             if(err) {
                 callback(err, null);
@@ -86,7 +92,7 @@ exports.search = search;
 exports.search = search;
 
 function get_ApiToken(time) {
-    
+    var api_secret = 'Ai89CcvqkHju';
     var shasum = crypto.createHash('sha1');
         // secret
         shasum.update(api_secret);

@@ -172,7 +172,7 @@ function findUser(json,calllback) {
       }
       if (users.length>0) {
         console.log('find '+users);
-        return calllback(err,users[0]);
+        return calllback(err,users);
       }else{
         console.log('找不到資料!');
         return calllback(err,null);

@@ -71,8 +71,10 @@ $(document).ready(function(){
 
     setTimeout(function(){
         //do what you need here
-        document.getElementById('mTitle').style.display = "none";
-        document.getElementById('showBlock').style.display = "none";
+        //document.getElementById('mTitle').style.display = "none";
+        if(document.getElementById('showBlock')){
+            document.getElementById('showBlock').style.display = "none";
+        }
     }, 5000);
 
 } );

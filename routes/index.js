@@ -28,7 +28,7 @@ module.exports = function(app) {
 	  var error = true;
 	  var user = req.session.user;
 	  var city = '新竹市';
-	  var list=null;township = [],district=[];
+	  var list=null;area = [],town=[];
 	  var areaList = JsonFileTools.getJsonFromFile(path);//All of citys data list
 	  var keys = Object.keys(areaList);//All of citys with data
 	  console.log("areaList :"+JSON.stringify(areaList));
@@ -44,23 +44,23 @@ module.exports = function(app) {
 			}
 			for(var i=0;i<list.length;i++){
 				//console.log('town:'+Object.keys(list[i])[0]);
-				township.push(Object.keys(list[i])[0]);
+				area.push(Object.keys(list[i])[0]);
 				//
 				if(i===0){
-					//district list of first town
-					district = list[i][Object.keys(list[i])[0]];
+					//town list of first town
+					town = list[i][Object.keys(list[i])[0]];
 				}
 			}
-			console.log('township:'+JSON.stringify(township));
-			console.log('district:'+JSON.stringify(district));
+			console.log(':'+JSON.stringify(area));
+			console.log('town:'+JSON.stringify(town));
 	  }
 	  
 	  res.render('board', { title: 'Board',
 			user:req.session.user,
 			citys : citys,
 			city : city,
-			township:township,
-			district: district,
+			area:area,
+			town: town,
 			areaList: areaList,
 			error
 	  });
@@ -68,21 +68,21 @@ module.exports = function(app) {
 
   app.post('/board', function (req, res) {
   	var city = req.body.mCity;
-  	var	township = req.body.mTownship;
-	var	district = req.body.mDistrict;
-	var	subject = req.body.mSubject;
+  	var	area = req.body.mArea;
+	var	town = req.body.mTown;
+	var	title = req.body.mTitle;
 	var	content = req.body.mContent;
 	var	account = req.body.mAccount;
 	var	name = req.body.mName;
   	console.log('Debug board post -> city:'+city);
-	console.log('Debug login post -> township:'+township);
-	console.log('Debug board post -> district:'+district);
-	console.log('Debug login post -> subject:'+subject);
+	console.log('Debug login post -> area:'+area);
+	console.log('Debug board post -> town:'+town);
+	console.log('Debug login post -> title:'+title);
 	console.log('Debug login post -> content:'+content);
 	console.log('Debug login post -> account:'+account);
 	console.log('Debug login post -> name:'+name);
 
-	Review.saveData(city,township,district,subject,content,account,name,function(err,result){
+	Review.saveData(city,area,town,title,content,account,name,function(err,result){
 		if(err){
 			console.log('Debug board Review.saveData -> err:'+err);
 		}
@@ -310,7 +310,8 @@ module.exports = function(app) {
 		   status = 2;
 	  }else{
 		  status = 1;
-		  /*Cloud.store(data.subject,data.content,function(err,result){
+		  Cloud.store(data.title,data.content,data.city,data.area,data.town,
+		  	function(err,result){
 			  if(err){
 				  status = 0;
 				  errorMessage = "上傳失敗,請稍待一會再重傳"; 
@@ -328,7 +329,7 @@ module.exports = function(app) {
 					return res.redirect('/board-manager');
 			  });
 		  });
-		  return;*/
+		  return;
 	  }
 	  var json = {enable:status};
 	  Review.updateData(id,json,function(err,datas){
@@ -353,7 +354,12 @@ module.exports = function(app) {
 			var successMessae,errorMessae;
 			var postAccount = req.flash('postAccount').toString();
 			console.log('Debug account get -> refresh :'+refresh);
-			var json =  {"level": {"$gte": myuser.level, "$lt": 3}};
+			if(myuser.level ===0){
+				var json =  {"level": {"$gte": myuser.level, "$lt": 3}};
+			}else{
+				var json =  {"city":myuser.city,"level": {"$gte": myuser.level, "$lt": 3}};
+			}
+			
 			console.log('Find json -> refresh :'+JSON.stringify(json));
 			User.findUser(json,function (err,users){
 				if(err){

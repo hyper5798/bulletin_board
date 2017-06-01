@@ -2,17 +2,17 @@ var areaListStr = document.getElementById("areaList").value;
 var areaList = JSON.parse(areaListStr);
 //Select object
 var mCity = document.getElementById("mCity");
-var mTownship = document.getElementById("mTownship");
-var mDistrict = document.getElementById("mDistrict");
-console.log('mDistrict.options.length:'+mDistrict.options.length);
+var mArea = document.getElementById("mArea");
+var mTown = document.getElementById("mTown");
+console.log('mTown.options.length:'+mTown.options.length);
 //Current area
 var city = document.getElementById("city").value;
-var township = document.getElementById("township").value;
-var district = document.getElementById("district").value;
-var selectedCity,selectedTown;
+var area = document.getElementById("area").value;
+var town = document.getElementById("town").value;
+var selectedCity,selectedArea;
 console.log("city :"+city);
-console.log("township :"+JSON.stringify(township));
-console.log("district :"+JSON.stringify(district));
+console.log("area :"+JSON.stringify(area));
+console.log("town :"+JSON.stringify(town));
 var keys = Object.keys(areaList);
 
 console.log('keys[0]:'+ keys[0]);
@@ -39,47 +39,49 @@ function cityChange(){
         alert('你選擇的城市目前無資料,目前有資料的城市如下:\n'+JSON.stringify(keys));
         console.log('mCity.options.length'+mCity.options.length);
     }
-    console.log('mTownship.options[0].innerHTML:'+mTownship.options[0].innerHTML);
-    //If change city then change township list
+    console.log('mArea.options[0].innerHTML:'+mArea.options[0].innerHTML);
+    //If change city then change area list
     if(city !== selectedCity){
         console.log('**********************************');
-        //Get township and district list in selected city
+        //Get area and town list in selected city
         list = areaList[selectedCity];
         console.log('list :n'+JSON.stringify(list));
-        township = [];
+        area = [];
         for(i=0;i<list.length;i++){
             //console.log('town:'+Object.keys(list[i])[0]);
-            township.push(Object.keys(list[i])[0]);
+            area.push(Object.keys(list[i])[0]);
             if(i===0){
-                //district list of first town
-                district = list[i][Object.keys(list[i])[0]];
+                //town list of first town
+                town = list[i][Object.keys(list[i])[0]];
             }
         }
-        changeSelect(mTownship,township);
-        changeSelect(mDistrict,district);
+        changeSelect(mArea,area);
+        changeSelect(mTown,town);
 
         city = selectedCity;
         $('.selectpicker').selectpicker('refresh');
     }
 }
 
-function townChange(){
+function areaChange(){
 
     //alert('townChange()');
 
-    selectedTown = mTownship.value;
-    console.log('selectedTown:'+ selectedTown);
-    var index =  mTownship.selectedIndex;
+    selectedArea = mArea.value;
+    
+    console.log('area:'+ area );
+    console.log('selectedArea:'+ selectedArea);
+    var index =  mArea.selectedIndex;
 
-    //If change city then change township list
-    if(city !== selectedCity){
+    //If change city then change area list
+    if(area !== selectedArea){
         console.log('**********************************');
-        //Get township and district list in selected city
+        //Get area and town list in selected city
         list = areaList[city];
-        console.log('list :n'+JSON.stringify(list));
-        district = list[index][Object.keys(list[index])[0]];
-        console.log('district :n'+JSON.stringify(district));
-        changeSelect(mDistrict,district);
+        console.log('list :'+JSON.stringify(list));
+        town = list[index][Object.keys(list[index])[0]];
+        console.log('town :'+JSON.stringify(town));
+        changeSelect(mTown,town);
 
         $('.selectpicker').selectpicker('refresh');
     }
@@ -88,7 +90,7 @@ function townChange(){
 function changeSelect(object,list){
     console.log('object list:'+JSON.stringify(list));
     var length = object.options.length;
-    //Remove options of township select
+    //Remove options of area select
     console.log('object.options.length:'+object.options.length);
     /*for ( i = 0; i < length; i++) {
         console.log('i:'+i);
@@ -124,7 +126,5 @@ function removeOptions(selectbox)
 }
 
 $(document).ready(function(){
-
-    township
 
 });
