@@ -56,7 +56,11 @@
           <li><a href="/board">里長專區</a></li>
           <li><a ></a></li>
           <li><a ></a></li>
-          <li><a ></a></li>
+          <% if(user){ %>
+              <li><a><%=user.account %></a></li>
+          <% }else{ %>
+              <li><a>&nbsp&nbsp&nbsp&nbsp</a></li>
+          <% } %> 
         </ul>
       </nav><!-- #nav-menu-container -->
     </div>

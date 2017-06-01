@@ -70,9 +70,13 @@
                           			<%= users[i].city %>
 								</td>
 								<td>
-									<select id="level" name="level">
-									<% if(user.level == 0)  { %>
-										<% if(users[i].level == 1)  { %>
+									<% if(users[i].account === user.account)  { %>
+										<select id="level" name="level" disabled>
+									<% }else{ %>
+										<select id="level" name="level">
+									<% } %>
+									<% if(users[i].level < 2)  { %>
+										<% if(users[i].level == 0)  { %>
 											<option value = "0" selected>
 										<% }else{ %>
 											<option value = "0">
@@ -110,19 +114,32 @@
 
 								</td>
 								<td>
-								    <% if(users[i].enable) { %>
-										<input type="checkbox" name="enable" value="enable" checked >
-									<% }else { %>
-										<input type="checkbox" name="enable" value="enable" >
+									<% if(users[i].account === user.account)  { %>
+										<% if(users[i].enable) { %>
+											<input type="checkbox" name="enable" value="enable" checked disabled>
+										<% }else { %>
+											<input type="checkbox" name="enable" value="enable" disabled>
+										<% } %>
+									<% }else{ %>
+										<% if(users[i].enable) { %>
+											<input type="checkbox" name="enable" value="enable" checked >
+										<% }else { %>
+											<input type="checkbox" name="enable" value="enable" >
+										<% } %>
 									<% } %>
+								    
 								</td>
 
 								<td>
 									<button type="button" name="edit" class="btn btn-primary btn-sm" onClick="editCheck(<%= i %>,'<%= users[i].account %>')">
 										 Edit
 									</button>
-
-									<button type="button" name="del" class="btn btn-danger btn-sm" onClick="delCheck(<%= i %>,'<%= users[i].account %>')">
+									<% if(users[i].account === user.account)  { %>
+										<button type="button" name="del" class="btn btn-danger btn-sm" disabled>
+									<% }else{ %>
+										<button type="button" name="del" class="btn btn-danger btn-sm" onClick="delCheck(<%= i %>,'<%= users[i].account %>')">
+									<% } %>
+									
 										Delete
 									</button>
 								</td>

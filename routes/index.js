@@ -355,9 +355,9 @@ module.exports = function(app) {
 			var postAccount = req.flash('postAccount').toString();
 			console.log('Debug account get -> refresh :'+refresh);
 			if(myuser.level ===0){
-				var json =  {"level": {"$gte": myuser.level, "$lt": 3}};
+				var json =  {"level": {"$gte": myuser.level, "$lt": 4}};
 			}else{
-				var json =  {"city":myuser.city,"level": {"$gte": myuser.level, "$lt": 3}};
+				var json =  {"city":myuser.city,"level": {"$gte": myuser.level, "$lt": 4}};
 			}
 			
 			console.log('Find json -> refresh :'+JSON.stringify(json));
@@ -373,7 +373,20 @@ module.exports = function(app) {
 				req.session.userS = users;
 				var myusers = req.session.userS;
 				console.log('Debug account get -> users:'+users.length+'\n'+users);
-				
+				//Jason add for filter 'admin' on 2017.06.01
+				var filterAccount = 'admin';
+				if(myuser.level ===0){
+					var removeIndex = -1;
+					for(var i in users){
+						if(users[i].account === 'admin'){
+							removeIndex = i;
+						}
+					}
+					if (removeIndex > -1) {
+						users.splice(removeIndex, 1);
+					}
+				}
+
 				//console.log('Debug account get -> user:'+mUser.name);
 				res.render('user/account', { title: 'Account', // user/account : ejs path
 					user:myuser,//current user : administrator

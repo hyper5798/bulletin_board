@@ -103,11 +103,16 @@
               </li>
             <% } %>
           <% } %>
-          <% if(false && title !=='Account' && title !=='Board-Manager'){ %>
+          <% if(user){ %>
+              <li><a><%=user.account %></a></li>
+          <% }else{ %>
+              <li><a>&nbsp&nbsp&nbsp&nbsp</a></li>
+           <% } %>    
+          <!--<% if(false && title !=='Account' && title !=='Board-Manager'){ %>
               <li><a href="#contact">聯絡我們</a></li>
            <% }else{ %>
               <li><a>&nbsp&nbsp&nbsp&nbsp</a></li>
-           <% } %>
+           <% } %> -->
 
         </ul>
       </nav><!-- #nav-menu-container -->
