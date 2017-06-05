@@ -53,7 +53,7 @@
           <img class="" src="img/logo.png" alt="Imperial">
         </div>-->
 
-        <h1>電子布告欄</h1>
+        <h1>電子佈告欄</h1>
         <h2><!--We create <span class="rotating">beautiful graphics, functional websites</span>--></h2>
         <div class="actions">
           <a href="#portfolio" class="btn-get-started">開始</a>
@@ -69,8 +69,8 @@
   <header id="header">
     <div class="container">
 
-      <div id="logo" class="pull-left">
-        <a href="#hero"><img src="img/Logo1n.png" alt="" title="" /></img></a>
+      <div id="logo">
+        <a href="#hero"><img src="img/Logo2n.png" alt="" title="" /></img></a>
         <!-- Uncomment below if you prefer to use a text image -->
         <!--<h1><a href="#hero">Blazing</a></h1>-->
       </div>
@@ -81,9 +81,9 @@
           <li class="menu-active"><a href="/">首頁</a></li>
           <% } %>
           <% if(title === 'Account' || title === 'Board-Manager' ){ %>
-              <li><a href="/">電子布告欄</a><li>
+              <li><a href="/">電子佈告欄</a><li>
           <% }else{ %>
-              <li><a href="#portfolio">電子布告欄</a></li>
+              <li><a href="#portfolio">電子佈告欄</a></li>
           <% } %>
           <% if(user){ %>
               <li><a href="/logout">登出</a></li>
@@ -95,7 +95,7 @@
             <% if(user.enable && user.level <2){ %>
               <li class="menu-has-children"><a href="">管理</a>
                 <ul>
-                  <li><a href="board-manager">布告</a></li>
+                  <li><a href="board-manager">佈告</a></li>
                   <% if( user.level < 2){ %>
                     <li><a href="/account">帳戶</a></li>
                   <% } %>
@@ -107,7 +107,7 @@
               <li><a><%=user.account %></a></li>
           <% }else{ %>
               <li><a>&nbsp&nbsp&nbsp&nbsp</a></li>
-           <% } %>    
+           <% } %>
           <!--<% if(false && title !=='Account' && title !=='Board-Manager'){ %>
               <li><a href="#contact">聯絡我們</a></li>
            <% }else{ %>
