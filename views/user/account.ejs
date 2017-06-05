@@ -75,22 +75,23 @@
 									<% }else{ %>
 										<select id="level" name="level">
 									<% } %>
-									<% if(users[i].level < 2)  { %>
-										<% if(users[i].level == 0)  { %>
-											<option value = "0" selected>
-										<% }else{ %>
-											<option value = "0">
+										<% if(user.level === 0)  { %>
+											<% if(users[i].level == 0)  { %>
+												<option value = "0" selected>
+											<% }else{ %>
+												<option value = "0">
+											<% } %>
+												0
+											</option>
+											<% if(users[i].level == 1)  { %>
+												<option value = "1" selected>
+											<% }else{ %>
+												<option value = "1">
+											<% } %>
+												1
+											</option>
 										<% } %>
-											0
-										</option>
-										<% if(users[i].level == 1)  { %>
-											<option value = "1" selected>
-										<% }else{ %>
-											<option value = "1">
-										<% } %>
-											1
-										</option>
-									<% } %>
+										
 										<% if(users[i].level == 2)  { %>
 											<option value = "2" selected>
 										<% }else{ %>

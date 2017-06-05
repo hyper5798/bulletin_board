@@ -375,16 +375,18 @@ module.exports = function(app) {
 				console.log('Debug account get -> users:'+users.length+'\n'+users);
 				//Jason add for filter 'admin' on 2017.06.01
 				var filterAccount = 'admin';
-				if(myuser.level ===0){
-					var removeIndex = -1;
-					for(var i in users){
-						if(users[i].account === 'admin'){
-							removeIndex = i;
-						}
+				if(myuser.level !==0){
+					filterAccount = myuser.account;
+				}
+
+				var removeIndex = -1;
+				for(var i in users){
+					if(users[i].account === filterAccount){
+						removeIndex = i;
 					}
-					if (removeIndex > -1) {
-						users.splice(removeIndex, 1);
-					}
+				}
+				if (removeIndex > -1) {
+					users.splice(removeIndex, 1);
 				}
 
 				//console.log('Debug account get -> user:'+mUser.name);

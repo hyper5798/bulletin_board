@@ -601,8 +601,9 @@ body.mobile-nav-active #mobile-nav-toggle {
 /* Portfolio Section
 --------------------------------*/
 #portfolio {
-  background: #fff;
   padding: 80px 0;
+  background: url(../img/03_b.jpg) top center fixed;
+  background-size: cover;
 }
 
 #portfolio .portfolio-item {
